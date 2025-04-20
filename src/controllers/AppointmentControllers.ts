@@ -26,7 +26,6 @@ export class AppointmentControllers{
             }
             const appointment = new Appointment(req.body);
             appointment.branchId = branch.id;
-            appointment.manual = true;
             appointment.barberId = req.body.barberId;
             appointment.status = "booked";
             
