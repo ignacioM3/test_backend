@@ -51,4 +51,10 @@ router.get("/:branchId/week/:appointmentDay",
     AppointmentControllers.getAppointmentByDay
 )
 
+
+router.get("/user/:userId", 
+    param("userId").isMongoId().withMessage("ID no válido"),
+    handleInputErrors,
+    AppointmentControllers.getAppointmentByUser
+);
 export default router
