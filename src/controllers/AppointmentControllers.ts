@@ -104,8 +104,7 @@ export class AppointmentControllers {
 
       if (
         req.user.role !== userRole.admin &&
-        req.user.role !== userRole.barber &&
-        req.user.id !== appointment.userId
+        req.user.role !== userRole.barber 
       ) {
         const error = new Error("Acción no valida");
         return res.status(400).json({ error: error.message });
@@ -223,4 +222,34 @@ export class AppointmentControllers {
       return res.status(500).json({ error: "Hubo un error en el servidor" });
     }
   };
+
+  static cancelAppointmetByUser = async (req: Request, res: Response) => {
+    const { appointmentId } = req.params;
+    try {
+      const appointment = await Appointment.findById(appointmentId);
+      if (!appointment) {
+        const error = new Error("Turno no encontrado");
+        return res.status(404).json({ error: error.message });
+      }
+
+      if (appointment.status === appointmentStatus.canceled) {
+        const error = new Error("El turno ya se encuentra cancelado");
+        return res.status(400).json({ error: error.message });
+      }
+
+      if (appointment.status === appointmentStatus.completed) {
+        const error = new Error("El turno ya se encuentra completado");
+        return res.status(400).json({ error: error.message });
+      }
+
+      await Appointment.findByIdAndUpdate(appointmentId, {
+        status: appointmentStatus.canceled,
+      });
+      return res
+        .status(200)
+        .json({ message: "Turno cancelado correctamente" });
+    } catch (error) {
+      return res.status(500).json({ error: "Hubo un error en el servidor" });
+    }
+  }
 }

@@ -57,4 +57,10 @@ router.get("/user/:userId",
     handleInputErrors,
     AppointmentControllers.getAppointmentByUser
 );
+
+router.post("/:appointmentId/canceled", 
+    param("appointmentId").isMongoId().withMessage("ID no válido"),
+    body("status").isIn([appointmentStatus.canceled]).withMessage("Estado no válido"),
+    handleInputErrors,
+    AppointmentControllers.cancelAppointmetByUser)
 export default router
